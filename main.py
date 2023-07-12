@@ -1,5 +1,7 @@
-contacts = {}
+from addr_book import *
 
+
+contacts = AddressBook()
 
 def input_error(func):
     def handler(*args):
@@ -11,39 +13,44 @@ def input_error(func):
             return "Error: phone can only contain digits."
         except IndexError:
             return "Error: provide both name and phone number."
+        except TypeError as e:
+            return e
     return handler
+
 
 @input_error
 def hello(*args):
     return "Hi! How can I help you today?"
 
+
 @input_error
 def add(*args) -> None:
-    phone = int(args[1])
-    name = args[0]
-    contacts[name] = phone
-    return f"Success! {name} has been added to your contacts list."
+    name = Name(args[0])
+    if name.value not in contacts.data:
+        phone = Phone(args[1])
+        rec = Record(name, phone)
+        contacts.add_record(rec)
+        return f"Success! {name.value} has been added to your contacts list."
+    return f"{name.value} already exists"
+
 
 @input_error
-def change(name:str, phone:int):
-    phone = int(phone)
-    if name in contacts:
-        contacts[name] = phone
-        return f"Success! Phone number for {name} has been changed."
-    else:
-        return f"{name} was not found in contacts list."
+def showall():
+    return contacts.data
+
 
 @input_error
-def phone(name: str):
-    return contacts[name]
+def change(name: str, old_phone: str, new_phone: str):
+    if name in contacts.data:
+        return contacts.data[name].edit_phone(old_phone, Phone(new_phone))
+    return f"Name was not found"
+
 
 @input_error
-def showall(*args):
-    result = []
-    for k,v in contacts.items():
-        result.append(': '.join([k,str(v)]))
-    return '\n'.join(result)
-    
+def phone(name):
+    return contacts.data[name].phones
+
+
 def main():
 
     func_maps = {
