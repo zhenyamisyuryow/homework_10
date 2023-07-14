@@ -24,31 +24,36 @@ def hello(*args):
 
 
 @input_error
-def add(*args) -> None:
-    name = Name(args[0])
+def showall():
+    return contacts.data
+
+
+# @input_error
+def add(name:str, phone:str=None, email:str=None) -> None:
+    name = Name(name)
     if name.value not in contacts.data:
-        phone = Phone(args[1])
-        rec = Record(name, phone)
+        phone = Phone(phone)
+        email = Email(email)
+        rec = Record(name, phone, email)
         contacts.add_record(rec)
         return f"Success! {name.value} has been added to your contacts list."
     return f"{name.value} already exists"
 
 
 @input_error
-def showall():
-    return contacts.data
-
-
-@input_error
 def change(name: str, old_phone: str, new_phone: str):
     if name in contacts.data:
-        return contacts.data[name].edit_phone(old_phone, Phone(new_phone))
-    return f"Name was not found"
+        result = contacts.data[name].edit_phone
+        if result(old_phone,new_phone) == True:
+            return f"Phone {old_phone} for {name} has been successfully changed to {new_phone}."
+        else:
+            return f"Phone {old_phone} was not found."
+    return f"Name was not found."
 
 
 @input_error
 def phone(name):
-    return contacts.data[name].phones
+    return contacts.get_record(name)
 
 
 def main():
