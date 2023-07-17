@@ -28,23 +28,22 @@ def showall():
     return contacts.data
 
 
-# @input_error
-def add(name:str, phone:str=None, email:str=None) -> None:
-    name = Name(name)
-    if name.value not in contacts.data:
+@input_error
+def add(name:str, phone:str) -> None:
+    if name not in contacts.data:
+        name = Name(name)
         phone = Phone(phone)
-        email = Email(email)
-        rec = Record(name, phone, email)
+        rec = Record(name, phone)
         contacts.add_record(rec)
-        return f"Success! {name.value} has been added to your contacts list."
-    return f"{name.value} already exists"
+        return f"Success! {name} has been added to your contacts list."
+    return f"{name} already exists"
 
 
 @input_error
 def change(name: str, old_phone: str, new_phone: str):
     if name in contacts.data:
-        result = contacts.data[name].edit_phone
-        if result(old_phone,new_phone) == True:
+        result = contacts.change_record
+        if result(name, old_phone, new_phone) == True:
             return f"Phone {old_phone} for {name} has been successfully changed to {new_phone}."
         else:
             return f"Phone {old_phone} was not found."

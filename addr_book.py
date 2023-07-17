@@ -7,54 +7,60 @@ class AddressBook(UserDict):
         value = record
         self.data[key] = value
     
-    def change_record(self, record):
-        self.data[record.name.value] = record
+    def change_record(self, name, *args):
+        return self.data[name].edit_phone(args[0], args[1])
     
     def get_record(self, name):
-        return f"{self.data[name]}"
+        return f"{self.data[name].phones}"
     
-
-
-class Name:
-    def __init__(self, value):
-        self.value = value
-
-
-class Phone:
+    
+class Field:
     def __init__(self, value):
         self.value = value
     
     def __repr__(self):
         return f"{self.value}"
+
+class Name(Field):
+    def __init__(self, value):
+        super().__init__(value)
+
+
+class Phone(Field):
+    def __init__(self, value):
+        super().__init__(value)
     
 
-class Email:
+class Email(Field):
     def __init__(self, value):
-        self.value = value
-        
-    def __repr__(self):
-        return f"{self.value}"
+        super().__init__(value)
 
 
 class Record:
-    def __init__(self, name:Name, phone:Phone = None, email:Email = None):
+    def __init__(self, name:Name, phone:Phone = ''):
         self.name = name
         self.phones = list()
         self.phones.append(phone)
-        self.email = email
     
     def __repr__(self):
-        return f"Name: {self.name.value}, Phones: {self.phones}, Email: {self.email}"
+        return f"Name: {self.name.value}, Phones: {self.phones}"
     
     def add_phone(self, new_phone):
         self.phones.append(new_phone)
     
-    def del_phone(self, phone):
-        self.phones.remove(phone)
-    
-    def edit_phone(self,old_phone, new_phone):
+    def edit_phone(self, old_phone, new_phone):
         for phone in self.phones:
             if phone.value == old_phone:
                 phone.value = new_phone
                 return True
         return False
+    
+    def del_phone(self, phone):
+        for item in self.phones:
+            if item.value == phone:
+                self.phones.remove(item)
+        return False
+    
+contacts = AddressBook()
+contacts.add_record(Record(Name("zhenya"), Phone(321)))
+print(contacts)
