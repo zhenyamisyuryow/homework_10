@@ -6,10 +6,7 @@ class AddressBook(UserDict):
         key = record.name.value
         value = record
         self.data[key] = value
-    
-    def change_record(self, name, *args):
-        return self.data[name].edit_phone(args[0], args[1])
-    
+        
     def get_record(self, name):
         return f"{self.data[name].phones}"
     
@@ -42,9 +39,6 @@ class Record:
         self.phones = list()
         self.phones.append(phone)
     
-    def __repr__(self):
-        return f"Name: {self.name.value}, Phones: {self.phones}"
-    
     def add_phone(self, new_phone):
         self.phones.append(new_phone)
     
@@ -59,8 +53,8 @@ class Record:
         for item in self.phones:
             if item.value == phone:
                 self.phones.remove(item)
+                return True
         return False
     
-contacts = AddressBook()
-contacts.add_record(Record(Name("zhenya"), Phone(321)))
-print(contacts)
+    def __repr__(self):
+        return f"Name: {self.name.value}, Phones: {self.phones}"
